@@ -24,6 +24,9 @@ __published:	// IDE-managed Components
 	TOpenDialog *OpenDialog2;
 	TEdit *Edit1;
 	TEdit *Edit2;
+	TEdit *Edit3;
+	TBevel *Bevel3;
+	TBevel *Bevel4;
 	void __fastcall Button1Click(TObject *Sender);
 	void __fastcall Button2Click(TObject *Sender);
 private:	// User declarations
@@ -35,11 +38,13 @@ float *datos2;
 float *derivada;
 
 
+
 float fmaximo (float *lista,int k);
 float fminimo (float *lista,int k);
 
 void Areagrafica();
 void Graficar (float * dato,int k);
+void Puntos (float * dato,int k);
 void Derivada (float * dato,int k);
 
 

@@ -144,9 +144,98 @@ void TForm7::Graficar(float * dato,int k) {
 		Canvas->LineTo(x2, y2);
 	}
 }
-
-
 // ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+void TForm7::Puntos(float * dato,int k) {
+
+int y1, y2, x1, x2, escY, escX, xoffset, yoffset;
+int top, left, bottom, right; //elipse
+
+
+int umbral=0;
+int Y=0;
+
+	Derivada(dato,k);
+
+	umbral=fmaximo(derivada,k-1)*0.75;
+
+	W = R.Width() / 2; // ancho del bevel1
+	H = R.Height() / 2; // alto bevel1
+
+	escX = k*0.5; // escala en x en funcion de la cantidad de valores de la lista
+	escY = (fmaximo(derivada, k) - fminimo(derivada, k)) ; // escala en y en funcion del valor mas alto en la lista
+
+	xoffset = R.Left; // alineamiento en eje x
+	yoffset = R.Top+H; // elineamiento en eje y
+
+
+	Canvas->Pen->Style = psSolid;
+	Canvas->Pen->Width = 1;
+	Canvas->Pen->Color = clRed;
+
+	for (int i = 0; i < k - 1; i++) {
+
+		y1 = (derivada[i] * H) / escY; // datos[i]"valor de lista"*H"alto medio del bevel"
+		y2 = (derivada[i + 1] * H) / escY; // datos[i+1]"valor siguiente de lista"
+		x1 = (i * W) / escX; // i"posicion en x"*(W/2)"punto medio del bevel"
+		x2 = ((i + 1) * W) / escX; // valor en y de la linea
+
+		y1 = yoffset - y1;
+		y2 = yoffset - y2;
+		x1 = x1 + xoffset;
+		x2 = x2 + xoffset;
+
+		Canvas->MoveTo(x1, y1);
+		Canvas->LineTo(x2, y2);
+	}
+
+
+
+
+	Canvas->Pen->Color=clBlack;
+
+	Y=(umbral*H)/escY;
+	Y=yoffset-Y;
+
+	Canvas->MoveTo(R.left,Y);
+	Canvas->LineTo(R.right,Y);
+
+
+
+	for (int i = 0; i < k-1; i++) {//ciclo que recorre la lista "derivada"
+
+			if(derivada[i]>umbral){//si un valor de der supera el umbral
+
+			y1 = (derivada[i] * H) / escY; // datos[i]"valor de lista"*H"alto medio del bevel"
+			x1 = (i * W) / escX; // i"posicion en x"*(W/2)"punto medio del bevel"
+
+
+			y1 = yoffset - y1;
+			x1 = x1 + xoffset;
+
+
+			left = x1 - 3;
+			top = y1 - 3;
+			right = x1 + 3;
+			bottom = y1 + 3;
+
+
+
+			Canvas->Pen->Style = psSolid;
+			Canvas->Pen->Width = 2;
+			Canvas->Pen->Color = clBlue;
+
+			Canvas->Ellipse(left, top, right, bottom);
+
+
+
+			i=i+125;//evitamos que otro valor de este latido sea detectado
+			}
+		}
+
+
+}
+
 // ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------
@@ -173,6 +262,15 @@ void __fastcall TForm7::Button1Click(TObject *Sender) {
 	Graficar(datos1, n);
 	Edit1->Text=Frecuencia(datos1,n);
 
+	R = Bevel3->BoundsRect;
+	Areagrafica();
+    Puntos(datos1,n);
+
+
+
+
+
+
 	}
 
 // ---------------------------------------------------------------------------
@@ -198,6 +296,10 @@ void __fastcall TForm7::Button2Click(TObject *Sender) {
 	Areagrafica();
 	Graficar(datos2, n);
 	Edit2->Text=Frecuencia(datos2,n);
+
+	R = Bevel4->BoundsRect;
+	Areagrafica();
+	Puntos(datos2, n);
 }
 // ---------------------------------------------------------------------------
 
